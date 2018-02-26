@@ -4,7 +4,7 @@ class users extends CI_Controller{
     function login(){
         if($_POST){
             $u_email = $_POST['uname'];
-            $u_pass = $_POST['pass'];
+            $u_pass = md5($_POST['pass']);
             $this->load->model('user');
             $udata = $this->user->login($u_email,$u_pass);
             unset($udata['u_pass']);
