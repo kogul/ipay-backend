@@ -20,6 +20,54 @@ class users extends CI_Controller{
             echo json_encode($udata);
         }
     }
+    function update(){
+      $headers = $this->input->request_headers();
+         $this->load->library('encryption');
+         $this->encryption->initialize(
+                array(
+                    'cipher' => 'aes-256',
+                    'mode' => 'ctr',
+                    'key' => 'passwordauthenticationsucks'
+                    )
+        );
+        $id = $this->encryption->decrypt($headers["auth"]);
+        
+            $u_name = $this->input->post('uname',true);
+            $phnum = $this->input->post('ph_num',true);
+            $u_email = $this->input->post('u_mail',true);
+            $udata = array(
+                          'user_id' =>$id,
+                          'u_name' => $u_name,
+                          'email' => $u_email,
+                          'phone' => $phnum
+                      ); 
+            $this->load->model('user');
+            $this->user->updateUser($udata);
+            echo json_encode(array('success' => true, 'message' => 'Your profile has been updated','data'=>$udata));
+    }
+    function changePassword(){
+      $headers = $this->input->request_headers();
+         $this->load->library('encryption');
+         $this->encryption->initialize(
+                array(
+                    'cipher' => 'aes-256',
+                    'mode' => 'ctr',
+                    'key' => 'passwordauthenticationsucks'
+                    )
+        );
+        $id = $this->encryption->decrypt($headers["auth"]);
+        $pass = $this->input->post('password');
+        $u_mail = $this->input->post('email');  
+        $this->load->model('user');
+        $udata = $this->user->login($u_email,$u_pass);
+        if(empty($udata)){
+          json_encode(array('success' => false, 'message' => 'Nice try. Better luck next time'));     
+        }else{
+          $this->user->updatePassword($id,$pass);
+          json_encode(array('success' => false, 'message' => 'Password Updated'));
+        }
+      
+    }
     function register(){
         if($_POST){
             $u_name = $this->input->post('uname',true);

@@ -16,4 +16,8 @@ class user extends CI_Model{
         $res = $this->db->get('User');
         return $res->row_array();
     }
+    function updateUser($udata){
+        $this->db->where('user_id', $udata['user_id']);
+        $this->db->update('User',$udata);
+    }
 }
